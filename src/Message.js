@@ -11,7 +11,26 @@ import Bubble from './Bubble';
 import Day from './Day';
 
 export default class Message extends React.Component {
-
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.warn(JSON.stringify(nextProps, null, 3));
+    // not implemented yet
+    // if (this.props.currentMessage.status !== nextProps.currentMessage.status) {
+    //   return true;
+    // }
+    if (this.props.nextMessage._id !== nextProps.nextMessage._id) {
+      return true;
+    }
+    if (this.props.previousMessage._id !== nextProps.previousMessage._id) {
+      return true;
+    }
+    if (nextProps.sentStatus) {
+      // console.warn('update');
+      return true;
+    }
+    return false;
+    // return true
+  }
+  
   isSameDay(currentMessage = {}, diffMessage = {}) {
     let diff = 0;
     if (diffMessage.createdAt && currentMessage.createdAt) {

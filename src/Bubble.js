@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   View,
+  Text
 } from 'react-native';
 
 import MessageText from './MessageText';
@@ -70,6 +71,55 @@ export default class Bubble extends React.Component {
     return null;
   }
 
+  renderTicks() {
+    const {currentMessage} = this.props;
+    if (this.props.renderTicks) {
+      return this.props.renderTicks(currentMessage);
+    }
+    if (currentMessage.user._id !== this.props.user._id) {
+      return;
+    }
+    if (currentMessage.sent || currentMessage.received) {
+      return (
+        <View style={styles.tickView}>
+          {currentMessage.sent && <Text style={[styles.tick, this.props.tickStyle]}>✓</Text>}
+          {currentMessage.received && <Text style={[styles.tick, this.props.tickStyle]}>✓</Text>}
+        </View>
+      )
+    }
+  }
+
+  renderTicks__() {
+    //const {currentMessage} = this.props;
+    // console.warn(JSON.stringify(this.props.currentMessage._id));
+    // console.warn(JSON.stringify(this.props.sentStatus));
+    // if (this.props.currentMessage._id === 56) {
+    //   return (
+    //     <View><Text>Terkirim</Text></View>
+    //   )
+    // }
+
+    // let f = this.props.sentStatus[this.props.currentMessage._id]
+    // console.warn(JSON.stringify(f, null, 3));
+    if (this.props.sentStatus[this.props.currentMessage._id] && this.props.sentStatus[this.props.currentMessage._id].sent) {
+      return (
+        <View><Text>Terkirim</Text></View>
+      )
+    }
+
+    // if (this.props.renderTicks) {
+    //   return this.props.renderTicks(currentMessage);
+    // }
+    // if (currentMessage.user._id !== this.props.user._id) {
+    //   return;
+    // }
+    // if (currentMessage.sentStatus[currentMessage._id]) {
+    //   return (
+    //     <View><Text>Terkirim</Text></View>
+    //   )
+    // }
+  }
+
   onLongPress() {
     if (this.props.onLongPress) {
       this.props.onLongPress(this.context);
@@ -108,7 +158,10 @@ export default class Bubble extends React.Component {
               {this.renderCustomView()}
               {this.renderMessageImage()}
               {this.renderMessageText()}
-              {this.renderTime()}
+              <View style={styles.bottom}>
+                {this.renderTime()}
+                {this.renderTicks()}
+              </View>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -156,6 +209,20 @@ const styles = {
       borderTopRightRadius: 3,
     },
   }),
+
+  bottom: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  tick: {
+    fontSize: 10,
+    backgroundColor: 'transparent',
+    color: 'white',
+  },
+  tickView: {
+    flexDirection: 'row',
+    marginRight: 10,
+  }
 };
 
 Bubble.contextTypes = {
